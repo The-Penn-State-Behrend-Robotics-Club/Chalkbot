@@ -1,6 +1,6 @@
 [submodule "klipper"]
 	path = klipper
-	url = https://github.com/Klipper3d/klipper.git
+	url = https://github.com/The-Penn-State-Behrend-Robotics-Club/klipper.git
 [submodule "grbl"]
 	path = grbl
 	url = https://github.com/gnea/grbl.git
