@@ -26,11 +26,6 @@
 #define GRBL_VERSION_BUILD "20190830"
 
 // Define standard libraries used by Grbl.
-#include <avr/io.h>
-#include <avr/pgmspace.h>
-#include <avr/interrupt.h>
-#include <avr/wdt.h>
-#include <util/delay.h>
 #include <math.h>
 #include <inttypes.h>
 #include <string.h>
@@ -42,24 +37,24 @@
 #include "config.h"
 #include "nuts_bolts.h"
 #include "settings.h"
-#include "system.h"
-#include "defaults.h"
-#include "cpu_map.h"
-#include "planner.h"
-#include "coolant_control.h"
-#include "eeprom.h"
+//#include "system.h"
+//#include "defaults.h"
+//#include "cpu_map.h"
+//#include "planner.h"
+//#include "coolant_control.h"
+//#include "eeprom.h"
 #include "gcode.h"
 #include "limits.h"
-#include "motion_control.h"
+//#include "motion_control.h"
 #include "planner.h"
-#include "print.h"
-#include "probe.h"
-#include "protocol.h"
+//#include "print.h"
+//#include "probe.h"
+//#include "protocol.h"
 #include "report.h"
-#include "serial.h"
-#include "spindle_control.h"
-#include "stepper.h"
-#include "jog.h"
+//#include "serial.h"
+//#include "spindle_control.h"
+//#include "stepper.h"
+//#include "jog.h"
 
 // ---------------------------------------------------------------------------------------
 // COMPILE-TIME ERROR CHECKING OF DEFINE VALUES:

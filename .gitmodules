@@ -4,3 +4,6 @@
 [submodule "grbl"]
 	path = grbl
 	url = https://github.com/gnea/grbl.git
+[submodule "svg2gcode"]
+	path = svg2gcode
+	url = https://github.com/sameer/svg2gcode.git
