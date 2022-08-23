@@ -7,3 +7,6 @@
 [submodule "svg2gcode"]
 	path = svg2gcode
 	url = https://github.com/sameer/svg2gcode.git
+[submodule "gpr"]
+	path = gpr
+	url = https://github.com/dillonhuff/gpr.git
