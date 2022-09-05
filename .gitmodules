@@ -10,3 +10,9 @@
 [submodule "gpr"]
 	path = gpr
 	url = https://github.com/dillonhuff/gpr.git
+[submodule "juicy-gcode"]
+	path = juicy-gcode
+	url = https://github.com/domoszlai/juicy-gcode.git
+[submodule "gcodeplot"]
+	path = gcodeplot
+	url = https://github.com/arpruss/gcodeplot.git
