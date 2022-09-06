@@ -1,0 +1,44 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../include/draw.h
+iostream
+-
+fstream
+-
+thread
+-
+atomic
+-
+string
+-
+parser.h
+../include/parser.h
+
+../include/gcode_program.h
+cassert
+-
+iostream
+-
+sstream
+-
+string
+-
+vector
+-
+
+../include/parser.h
+string
+-
+gcode_program.h
+../include/gcode_program.h
+
+/home/durus/Chalkbot/src/draw.cpp
+draw.h
+/home/durus/Chalkbot/src/draw.h
+

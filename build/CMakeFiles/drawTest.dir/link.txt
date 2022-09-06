@@ -1,0 +1,1 @@
+/usr/bin/c++   -std=c++11 -I./src -I./test -Werror -Wall  -rdynamic CMakeFiles/drawTest.dir/test/drawTest.cpp.o CMakeFiles/drawTest.dir/src/draw.cpp.o  -o drawTest   -L/home/durus/Chalkbot/lib  -Wl,-rpath,/home/durus/Chalkbot/lib -lgpr 
