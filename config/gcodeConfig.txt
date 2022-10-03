@@ -23,7 +23,7 @@ no-shading-crosshatch
 no-stroke-all
 optimization-time=30
 no-sort
-pens=3pens.config
+pens=./config/3pens.config
 extract-color=all
 no-pause-at-start
 tool-offset=0.000
