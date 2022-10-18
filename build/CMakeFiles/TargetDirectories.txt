@@ -1,0 +1,3 @@
+/home/durus/Chalkbot/build/CMakeFiles/rebuild_cache.dir
+/home/durus/Chalkbot/build/CMakeFiles/edit_cache.dir
+/home/durus/Chalkbot/build/CMakeFiles/findFiducial.dir
