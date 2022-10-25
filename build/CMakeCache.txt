@@ -216,7 +216,7 @@ ChalkBot-OpenCV_BINARY_DIR:STATIC=/home/durus/Chalkbot/build
 ChalkBot-OpenCV_SOURCE_DIR:STATIC=/home/durus/Chalkbot
 
 //The directory containing a CMake configuration file for OpenCV.
-OpenCV_DIR:PATH=/home/durus/.local/lib/cmake/opencv4
+OpenCV_DIR:PATH=/usr/local/lib/cmake/opencv4
 
 
 ########################
@@ -367,5 +367,5 @@ CMAKE_UNAME:INTERNAL=/usr/bin/uname
 //ADVANCED property for variable: CMAKE_VERBOSE_MAKEFILE
 CMAKE_VERBOSE_MAKEFILE-ADVANCED:INTERNAL=1
 //Details about finding OpenCV
-FIND_PACKAGE_MESSAGE_DETAILS_OpenCV:INTERNAL=[/home/durus/.local][v4.6.0()]
+FIND_PACKAGE_MESSAGE_DETAILS_OpenCV:INTERNAL=[/usr/local][v4.6.0()]
 
