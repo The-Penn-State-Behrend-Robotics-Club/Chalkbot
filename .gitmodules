@@ -1,6 +1,3 @@
-[submodule "klipper"]
-	path = klipper
-	url = https://github.com/The-Penn-State-Behrend-Robotics-Club/klipper.git
-[submodule "grbl"]
-	path = grbl
-	url = https://github.com/gnea/grbl.git
+[submodule "extern/opencv"]
+	path = extern/opencv
+	url = git@github.com:opencv/opencv.git
