@@ -15,4 +15,4 @@
 	url = https://github.com/domoszlai/juicy-gcode.git
 [submodule "gcodeplot"]
 	path = gcodeplot
-	url = git@github.com:BehrendRoboticsClub/gcodeplot.git
+	url = git@github.com:The-Penn-State-Behrend-Robotics-Club/gcodeplot.git
