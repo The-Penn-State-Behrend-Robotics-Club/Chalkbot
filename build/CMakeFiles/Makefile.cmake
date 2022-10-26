@@ -51,5 +51,7 @@ set(CMAKE_MAKEFILE_PRODUCTS
 
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
+  "CMakeFiles/markerTracking.dir/DependInfo.cmake"
+  "CMakeFiles/libraryTest.dir/DependInfo.cmake"
   "CMakeFiles/findFiducial.dir/DependInfo.cmake"
   )

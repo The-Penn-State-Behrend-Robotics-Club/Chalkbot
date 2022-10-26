@@ -7,7 +7,15 @@ find_package(OpenCV REQUIRED)
 
 add_executable(findFiducial tests/findFiducial.cpp)
 #add_executable(drawMarker tests/drawMarker.cpp)
+add_executable(libraryTest tests/libraryTest.cpp)
+
+
+add_library(markerTracking SHARED src/markerTracking.cpp)
+target_include_directories(markerTracking PUBLIC include/)
+target_link_libraries(markerTracking ${OpenCV_LIBS})
 
 target_link_libraries(findFiducial ${OpenCV_LIBS})
 #target_link_libraries(drawMarker ${OpenCV_LIBS})
+target_link_libraries(libraryTest ${OpenCV_LIBS} markerTracking)
+
 

@@ -53,6 +53,8 @@ CMAKE_BINARY_DIR = /home/durus/Chalkbot/build
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
+all: CMakeFiles/markerTracking.dir/all
+all: CMakeFiles/libraryTest.dir/all
 all: CMakeFiles/findFiducial.dir/all
 
 .PHONY : all
@@ -63,9 +65,65 @@ preinstall:
 .PHONY : preinstall
 
 # The main recursive "clean" target.
+clean: CMakeFiles/markerTracking.dir/clean
+clean: CMakeFiles/libraryTest.dir/clean
 clean: CMakeFiles/findFiducial.dir/clean
 
 .PHONY : clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/markerTracking.dir
+
+# All Build rule for target.
+CMakeFiles/markerTracking.dir/all:
+	$(MAKE) -f CMakeFiles/markerTracking.dir/build.make CMakeFiles/markerTracking.dir/depend
+	$(MAKE) -f CMakeFiles/markerTracking.dir/build.make CMakeFiles/markerTracking.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/durus/Chalkbot/build/CMakeFiles --progress-num=5,6 "Built target markerTracking"
+.PHONY : CMakeFiles/markerTracking.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/markerTracking.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/durus/Chalkbot/build/CMakeFiles 2
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/markerTracking.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/durus/Chalkbot/build/CMakeFiles 0
+.PHONY : CMakeFiles/markerTracking.dir/rule
+
+# Convenience name for target.
+markerTracking: CMakeFiles/markerTracking.dir/rule
+
+.PHONY : markerTracking
+
+# clean rule for target.
+CMakeFiles/markerTracking.dir/clean:
+	$(MAKE) -f CMakeFiles/markerTracking.dir/build.make CMakeFiles/markerTracking.dir/clean
+.PHONY : CMakeFiles/markerTracking.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/libraryTest.dir
+
+# All Build rule for target.
+CMakeFiles/libraryTest.dir/all: CMakeFiles/markerTracking.dir/all
+	$(MAKE) -f CMakeFiles/libraryTest.dir/build.make CMakeFiles/libraryTest.dir/depend
+	$(MAKE) -f CMakeFiles/libraryTest.dir/build.make CMakeFiles/libraryTest.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/durus/Chalkbot/build/CMakeFiles --progress-num=3,4 "Built target libraryTest"
+.PHONY : CMakeFiles/libraryTest.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/libraryTest.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/durus/Chalkbot/build/CMakeFiles 4
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/libraryTest.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/durus/Chalkbot/build/CMakeFiles 0
+.PHONY : CMakeFiles/libraryTest.dir/rule
+
+# Convenience name for target.
+libraryTest: CMakeFiles/libraryTest.dir/rule
+
+.PHONY : libraryTest
+
+# clean rule for target.
+CMakeFiles/libraryTest.dir/clean:
+	$(MAKE) -f CMakeFiles/libraryTest.dir/build.make CMakeFiles/libraryTest.dir/clean
+.PHONY : CMakeFiles/libraryTest.dir/clean
 
 #=============================================================================
 # Target rules for target CMakeFiles/findFiducial.dir

@@ -111,6 +111,32 @@ depend:
 .PHONY : depend
 
 #=============================================================================
+# Target rules for targets named markerTracking
+
+# Build rule for target.
+markerTracking: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 markerTracking
+.PHONY : markerTracking
+
+# fast build rule for target.
+markerTracking/fast:
+	$(MAKE) -f CMakeFiles/markerTracking.dir/build.make CMakeFiles/markerTracking.dir/build
+.PHONY : markerTracking/fast
+
+#=============================================================================
+# Target rules for targets named libraryTest
+
+# Build rule for target.
+libraryTest: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 libraryTest
+.PHONY : libraryTest
+
+# fast build rule for target.
+libraryTest/fast:
+	$(MAKE) -f CMakeFiles/libraryTest.dir/build.make CMakeFiles/libraryTest.dir/build
+.PHONY : libraryTest/fast
+
+#=============================================================================
 # Target rules for targets named findFiducial
 
 # Build rule for target.
@@ -122,6 +148,33 @@ findFiducial: cmake_check_build_system
 findFiducial/fast:
 	$(MAKE) -f CMakeFiles/findFiducial.dir/build.make CMakeFiles/findFiducial.dir/build
 .PHONY : findFiducial/fast
+
+src/markerTracking.o: src/markerTracking.cpp.o
+
+.PHONY : src/markerTracking.o
+
+# target to build an object file
+src/markerTracking.cpp.o:
+	$(MAKE) -f CMakeFiles/markerTracking.dir/build.make CMakeFiles/markerTracking.dir/src/markerTracking.cpp.o
+.PHONY : src/markerTracking.cpp.o
+
+src/markerTracking.i: src/markerTracking.cpp.i
+
+.PHONY : src/markerTracking.i
+
+# target to preprocess a source file
+src/markerTracking.cpp.i:
+	$(MAKE) -f CMakeFiles/markerTracking.dir/build.make CMakeFiles/markerTracking.dir/src/markerTracking.cpp.i
+.PHONY : src/markerTracking.cpp.i
+
+src/markerTracking.s: src/markerTracking.cpp.s
+
+.PHONY : src/markerTracking.s
+
+# target to generate assembly for a file
+src/markerTracking.cpp.s:
+	$(MAKE) -f CMakeFiles/markerTracking.dir/build.make CMakeFiles/markerTracking.dir/src/markerTracking.cpp.s
+.PHONY : src/markerTracking.cpp.s
 
 tests/findFiducial.o: tests/findFiducial.cpp.o
 
@@ -150,6 +203,33 @@ tests/findFiducial.cpp.s:
 	$(MAKE) -f CMakeFiles/findFiducial.dir/build.make CMakeFiles/findFiducial.dir/tests/findFiducial.cpp.s
 .PHONY : tests/findFiducial.cpp.s
 
+tests/libraryTest.o: tests/libraryTest.cpp.o
+
+.PHONY : tests/libraryTest.o
+
+# target to build an object file
+tests/libraryTest.cpp.o:
+	$(MAKE) -f CMakeFiles/libraryTest.dir/build.make CMakeFiles/libraryTest.dir/tests/libraryTest.cpp.o
+.PHONY : tests/libraryTest.cpp.o
+
+tests/libraryTest.i: tests/libraryTest.cpp.i
+
+.PHONY : tests/libraryTest.i
+
+# target to preprocess a source file
+tests/libraryTest.cpp.i:
+	$(MAKE) -f CMakeFiles/libraryTest.dir/build.make CMakeFiles/libraryTest.dir/tests/libraryTest.cpp.i
+.PHONY : tests/libraryTest.cpp.i
+
+tests/libraryTest.s: tests/libraryTest.cpp.s
+
+.PHONY : tests/libraryTest.s
+
+# target to generate assembly for a file
+tests/libraryTest.cpp.s:
+	$(MAKE) -f CMakeFiles/libraryTest.dir/build.make CMakeFiles/libraryTest.dir/tests/libraryTest.cpp.s
+.PHONY : tests/libraryTest.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -158,10 +238,18 @@ help:
 	@echo "... depend"
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
+	@echo "... markerTracking"
+	@echo "... libraryTest"
 	@echo "... findFiducial"
+	@echo "... src/markerTracking.o"
+	@echo "... src/markerTracking.i"
+	@echo "... src/markerTracking.s"
 	@echo "... tests/findFiducial.o"
 	@echo "... tests/findFiducial.i"
 	@echo "... tests/findFiducial.s"
+	@echo "... tests/libraryTest.o"
+	@echo "... tests/libraryTest.i"
+	@echo "... tests/libraryTest.s"
 .PHONY : help
 
 
