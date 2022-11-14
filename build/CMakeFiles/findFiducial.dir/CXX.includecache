@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/home/durus/Chalkbot/tests/findFiducial.cpp
+/home/adam/Chalkbot/tests/findFiducial.cpp
 stdio.h
 -
 stdlib.h
@@ -18,9 +18,9 @@ stddef.h
 iostream
 -
 opencv2/opencv_modules.hpp
-/home/durus/Chalkbot/tests/opencv2/opencv_modules.hpp
+/home/adam/Chalkbot/tests/opencv2/opencv_modules.hpp
 opencv2/opencv.hpp
-/home/durus/Chalkbot/tests/opencv2/opencv.hpp
+/home/adam/Chalkbot/tests/opencv2/opencv.hpp
 
 /usr/local/include/opencv4/opencv2/calib3d.hpp
 opencv2/core.hpp

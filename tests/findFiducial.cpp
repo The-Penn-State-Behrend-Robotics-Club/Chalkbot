@@ -19,6 +19,8 @@ bool inBounds(int i, int min, int max){
 
 int main(){
 
+    chrono::time_point<std::chrono::system_clock> start, end;
+     std::chrono::duration<double> elapsed_white, elapsed_findContours, elapsed_filterCanidates, elapsed_filterClusters;
     Mat scene, white, drawing, drawing_polygons, drawing_clusters;
     vector<int> compression_params;
     compression_params.push_back(IMWRITE_PNG_COMPRESSION);
@@ -33,21 +35,33 @@ int main(){
     }
 
 /// Filter only white
+    start = chrono::system_clock::now();
     inRange(scene, Scalar(200,200,200), Scalar(255,255,255), white);
+    end = chrono::system_clock::now();
+    elapsed_white = end - start;
+    
 
 // Get contours
+    start = chrono::system_clock::now();
     findContours( white, contours, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE );
     drawing = Mat::zeros(scene.size(), CV_8UC3);
     drawContours(drawing, contours, -1, Scalar(255,0,0), 2);
+    end = chrono::system_clock::now();
+    elapsed_findContours = end - start;
+
 
     cout << "Number of countours: " << contours.size() << endl;
 
 //////////////////// Filter out canidates //////////////////////////
+
     vector<Point> approxShape;
     struct canidate_t {vector<Point> polygon; Point center; int width; int height;};
     vector<canidate_t> canidates;
     drawing_polygons = Mat::zeros(scene.size(), CV_8UC3);
     vector<Vec4i>::iterator h = hierarchy.begin();
+
+    start = chrono::system_clock::now();
+
     for(vector<vector<Point>>::iterator i = contours.begin(); i != contours.end(); i++){
         h++;
         if( (*i).size() >= 4 &&
@@ -88,14 +102,22 @@ int main(){
 
         
     }
+
+    end = chrono::system_clock::now();
+    elapsed_filterCanidates = end - start;
+
     cout << canidates.size() << ", 4-point polygons detected." << endl;
 
+    
 
 //////////////////// Filter out clusters //////////////////////////
 
     drawing_clusters = Mat::zeros(scene.size(), CV_8UC3);
     struct clusterCanidates_t {vector<canidate_t>::iterator outer; vector<vector<canidate_t>::iterator> inners;};
     vector<clusterCanidates_t> clusterCanidates;
+
+    start = chrono::system_clock::now();
+
     for(vector<canidate_t>::iterator outerCanidate = canidates.begin(); outerCanidate != canidates.end(); outerCanidate++){ // Iterate through outside contours
         vector<vector<canidate_t>::iterator> tempInners; // Temporary record of inner polygons
         int outerArea = -1;
@@ -116,6 +138,9 @@ int main(){
                 drawContours(drawing_clusters, vector<vector<Point>>(1,(**i).polygon), 0, Scalar(255,0,255));
         }
     }
+
+    end = chrono::system_clock::now();
+    elapsed_filterClusters = end - start;
 /*
     int mainBox, mainBoxArea, area;
     int leftBox1, leftBox2, rightBox1, rightBox2, topBox1, topBox2, bottBox1, bottBox2;
@@ -153,6 +178,10 @@ int main(){
 
     // Left line
 
+    cout << "White    : " << elapsed_white.count() << endl;
+    cout << "Find     : " << elapsed_findContours.count() << endl;
+    cout << "Filter   : " << elapsed_filterCanidates.count() << endl;
+    cout << "Clusters : " << elapsed_filterClusters.count() << endl;
 
 
     if(!imwrite("images/out/MaskedScene1.png",white, compression_params) || 

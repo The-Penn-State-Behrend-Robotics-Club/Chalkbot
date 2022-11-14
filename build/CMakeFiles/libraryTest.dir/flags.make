@@ -6,5 +6,5 @@ CXX_FLAGS =   -std=gnu++11
 
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/home/durus/Chalkbot/include -isystem /usr/local/include/opencv4 
+CXX_INCLUDES = -I/home/adam/Chalkbot/include -isystem /usr/local/include/opencv4 
 
