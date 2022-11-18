@@ -12,6 +12,7 @@
 
 using namespace cv;
 
+
 struct whiteFilter_args{
     bool debug;
     Mat sceneIn;
