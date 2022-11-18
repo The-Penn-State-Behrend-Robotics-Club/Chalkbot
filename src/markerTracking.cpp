@@ -5,28 +5,90 @@ using namespace std;
 
 namespace ft{ //fiducial tracker
 
-    void *engineWorker(void *args);
     void *engineController(void *args);
+    void *whiteFilter(void *args);
+    void *findCanidates(void *args);
+    void *findClusters(void *args);
 
-    struct engine_t{
-        bool running;
-        pthread_t controller;
-        pthread_t workers[4];
-    } engine;
 
     bool inBounds(int i, int min, int max){
         if(i >= min && i <= max) return true;
         return false;
     }
 
-    int startFiducialEngine(){
+    struct engine_t{
+        bool running;
+        pthread_t controller_pt;
+        pthread_t whiteFilter_pt;
+        pthread_t findCanidates_pt;
+        pthread_t findClusters_pt;
 
-        pthread_create(&(engine.controller), NULL, &engineController, NULL);
-        pthread_create(&(engine.workers[0]), NULL, &engineWorker, NULL);
-        pthread_create(&(engine.workers[1]), NULL, &engineWorker, NULL);
-        pthread_create(&(engine.workers[2]), NULL, &engineWorker, NULL);
-        pthread_create(&(engine.workers[3]), NULL, &engineWorker, NULL);
+        pthread_barrier_t startBarrier, endBarrier;
+        pthread_mutex_t sharedLock;
+        pthread_cond_t cycle;
+
+        struct {
+            bool run;
+            bool exit;
+
+            Mat sceneIn;
+            Mat maskedScene;
+            vector<vector<Point>> *contours;
+            vector<vector<vector<Point>>> *clusters;
+
+        } shared;
+
+        struct whiteFilterArgs_t{
+            bool debug;
+            Scalar upper;
+            Scalar lower;
+        } whiteFilterArgs;
+
+        struct findCanidatesArgs_t{
+            bool debug;
+
+        }findCanidatesArgs;
+
+        struct findClustersArgs_t{
+            bool debug;
+
+        }findClustersArgs;
+    } engine;    
+
+    bool startFiducialEngine(){
+
+        pthread_mutex_init(&(engine.sharedLock), NULL);
+        pthread_barrier_init(&(engine.startBarrier), NULL, 4);
+        pthread_barrier_init(&(engine.endBarrier), NULL, 4);
+
+        pthread_mutex_lock(&(engine.sharedLock));
+        engine.shared.run = false;
+        engine.shared.exit = false;
+        pthread_mutex_unlock(&(engine.sharedLock));
+
+        if(!((pthread_create(&(engine.controller_pt)    , NULL, &engineController , NULL) == 0) &&
+             (pthread_create(&(engine.whiteFilter_pt)   , NULL, &whiteFilter      , NULL) == 0) &&
+             (pthread_create(&(engine.findCanidates_pt) , NULL, &findCanidates    , NULL) == 0) &&
+             (pthread_create(&(engine.findClusters_pt)  , NULL, &findClusters     , NULL) == 0)))
+        {
+            pthread_mutex_lock(&(engine.sharedLock));
+            engine.shared.exit = true;
+            pthread_mutex_unlock(&(engine.sharedLock));
+
+            pthread_kill(engine.controller_pt, SIGINT);
+            pthread_kill(engine.whiteFilter_pt, SIGINT);
+            pthread_kill(engine.findCanidates_pt, SIGINT);
+            pthread_kill(engine.findClusters_pt, SIGINT);
+            
+            pthread_join(engine.controller_pt, NULL);
+            pthread_join(engine.whiteFilter_pt, NULL);
+            pthread_join(engine.findCanidates_pt, NULL);
+            pthread_join(engine.findClusters_pt, NULL);
+
+            return false;
+        }
         
+        return true;
         
 
     }
@@ -36,10 +98,139 @@ namespace ft{ //fiducial tracker
 
     }
 
-    void *engineWorker(void *args){
+    void *whiteFilter(void *args){
 
+        Mat sceneOut[2], sceneIn;
+        bool activeBuff;
 
+        sceneOut[0] = Mat::zeros(sceneIn.size(), CV_8UC3);
+        sceneOut[1] = Mat::zeros(sceneIn.size(), CV_8UC3);
+
+        pthread_mutex_lock(&(engine.sharedLock));
+        while(1){
+            while(1){
+                if(engine.shared.run == true) break;
+                if(engine.shared.exit == true) {
+                    pthread_mutex_unlock(&(engine.sharedLock));
+                    return NULL;
+                }
+                pthread_cond_wait(&(engine.cycle), &(engine.sharedLock));
+            }
+            pthread_mutex_unlock(&(engine.sharedLock));
+
+            pthread_barrier_wait(&(engine.startBarrier)); // Wait for all threads to be ready.
+
+            inRange(sceneIn, engine.whiteFilterArgs.lower, engine.whiteFilterArgs.upper, sceneOut[activeBuff]);
+
+            pthread_barrier_wait(&(engine.endBarrier)); // Wait for all threads to finish.
+            
+            pthread_mutex_lock(&(engine.sharedLock));
+            engine.shared.maskedScene = sceneOut[activeBuff];
+            activeBuff = !activeBuff; // Switch to other buffer.
+        }
     }
+
+    void *findContours(void *args){
+        vector<vector<Point>> foundContours[2];
+        vector<Vec4i> hierarchy;
+        bool activeBuff;
+
+        pthread_mutex_lock(&(engine.sharedLock));
+        while(1){
+            while(1){
+                if(engine.shared.run == true) break;
+                if(engine.shared.exit == true) {
+                    pthread_mutex_unlock(&(engine.sharedLock));
+                    return NULL;
+                }
+                pthread_cond_wait(&(engine.cycle), &(engine.sharedLock));
+            }
+            pthread_mutex_unlock(&(engine.sharedLock));
+
+            pthread_barrier_wait(&(engine.startBarrier)); // Wait for all threads to be ready.
+
+            findContours(engine.shared.maskedScene, foundContours[activeBuff], hierarchy, RETR_FLOODFILL, CHAIN_APPROX_SIMPLE);
+
+            pthread_barrier_wait(&(engine.endBarrier)); // Wait for all threads to finish.
+            
+            pthread_mutex_lock(&(engine.sharedLock));
+            engine.shared.contours = &foundContours[activeBuff];
+            activeBuff = !activeBuff; // Switch to other buffer.
+            foundContours[activeBuff].clear(); // Empty old buffer.
+
+        }
+    }
+
+    void *findClusters(void *args){
+        pthread_mutex_lock(&(engine.sharedLock));
+        while(1){
+            while(1){
+                if(engine.shared.run == true) break;
+                if(engine.shared.exit == true) {
+                    pthread_mutex_unlock(&(engine.sharedLock));
+                    return NULL;
+                }
+                pthread_cond_wait(&(engine.cycle), &(engine.sharedLock));
+            }
+            pthread_mutex_unlock(&(engine.sharedLock));
+
+            pthread_barrier_wait(&(engine.startBarrier)); // Wait for all threads to be ready.
+
+            struct canidate_t {vector<Point> polygon; Point center; int width; int height;};
+
+
+            for(vector<vector<Point>>::iterator i = *(engine.shared).contours.begin(); i != *(engine.shared).contours.end(); i++){
+
+                if( (*i).size() >= 4 &&
+                    inBounds(arcLength((*i), false), 100, 2000) && // hierarchy[i][2] >= 0 == TRUE when closed
+                    inBounds(contourArea((*i)), 200, 100000))
+                {
+                    approxPolyDP((*i), approxShape, 1, true);
+                    //if(debug) cout << "Found canidate! Size: " << approxShape.size() << endl;
+
+                    if(approxShape.size() == 4){
+
+                        int x = (approxShape[0].x + approxShape[1].x + approxShape[2].x + approxShape[3].x) / 4 - 10;
+                        int y = (approxShape[0].y + approxShape[1].y + approxShape[2].y + approxShape[3].y) / 4 - 10;
+
+                        //if(debug) cout << "Correct Size!" << endl;
+                        int top, bottom = INT_MAX, left = INT_MAX, right;
+                        for(int j = 0; j < 4; j++){
+                            if(approxShape[j].x < left)     left = approxShape[j].x;
+                            if(approxShape[j].x > right)    right = approxShape[j].x;
+                            if(approxShape[j].y < top)      top = approxShape[j].y;
+                            if(approxShape[j].y > bottom)   bottom = approxShape[j].y;
+                        }
+
+                        canidates.push_back({
+                            approxShape,
+                            Point(x,y),
+                            right - left,
+                            top - bottom
+                        });
+                        
+                        //if(debug) drawContours(workspace, vector<vector<Point> >(1,approxShape), 0, Scalar(0,0,255));
+
+                        //if(debug) rectangle(workspace, Rect(x, y, 20, 20), Scalar(0,255,0));
+                    }
+
+                }
+
+                
+            }
+        //if(debug) cout << canidates.size() << ", 4-point polygons detected." << endl;
+
+
+            pthread_barrier_wait(&(engine.endBarrier)); // Wait for all threads to finish.
+            
+            pthread_mutex_lock(&(engine.sharedLock));
+            engine.shared.candidates = &foundCanidates[activeBuff];
+            activeBuff = !activeBuff; // Switch to other buffer.
+            foundCanidates[activeBuff].clear(); // Empty old buffer.
+
+        }
+    }
+    
 
     Point findMarker(Mat *scene, bool preserveInput, bool debug){
 
