@@ -3,7 +3,7 @@
 
 CMakeFiles/libraryTest.dir/tests/libraryTest.cpp.o
  ../include/markerTracking.h
- /home/durus/Chalkbot/tests/libraryTest.cpp
+ /home/adam/Chalkbot/tests/libraryTest.cpp
  /usr/local/include/opencv4/opencv2/calib3d.hpp
  /usr/local/include/opencv4/opencv2/core.hpp
  /usr/local/include/opencv4/opencv2/core/affine.hpp

@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/durus/Chalkbot
+CMAKE_SOURCE_DIR = /home/adam/Chalkbot
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/durus/Chalkbot/build
+CMAKE_BINARY_DIR = /home/adam/Chalkbot/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,9 +80,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/durus/Chalkbot/build/CMakeFiles /home/durus/Chalkbot/build/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/adam/Chalkbot/build/CMakeFiles /home/adam/Chalkbot/build/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/durus/Chalkbot/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/adam/Chalkbot/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -122,6 +122,19 @@ markerTracking: cmake_check_build_system
 markerTracking/fast:
 	$(MAKE) -f CMakeFiles/markerTracking.dir/build.make CMakeFiles/markerTracking.dir/build
 .PHONY : markerTracking/fast
+
+#=============================================================================
+# Target rules for targets named pipelineTest
+
+# Build rule for target.
+pipelineTest: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 pipelineTest
+.PHONY : pipelineTest
+
+# fast build rule for target.
+pipelineTest/fast:
+	$(MAKE) -f CMakeFiles/pipelineTest.dir/build.make CMakeFiles/pipelineTest.dir/build
+.PHONY : pipelineTest/fast
 
 #=============================================================================
 # Target rules for targets named libraryTest
@@ -230,6 +243,33 @@ tests/libraryTest.cpp.s:
 	$(MAKE) -f CMakeFiles/libraryTest.dir/build.make CMakeFiles/libraryTest.dir/tests/libraryTest.cpp.s
 .PHONY : tests/libraryTest.cpp.s
 
+tests/pipelineTest.o: tests/pipelineTest.cpp.o
+
+.PHONY : tests/pipelineTest.o
+
+# target to build an object file
+tests/pipelineTest.cpp.o:
+	$(MAKE) -f CMakeFiles/pipelineTest.dir/build.make CMakeFiles/pipelineTest.dir/tests/pipelineTest.cpp.o
+.PHONY : tests/pipelineTest.cpp.o
+
+tests/pipelineTest.i: tests/pipelineTest.cpp.i
+
+.PHONY : tests/pipelineTest.i
+
+# target to preprocess a source file
+tests/pipelineTest.cpp.i:
+	$(MAKE) -f CMakeFiles/pipelineTest.dir/build.make CMakeFiles/pipelineTest.dir/tests/pipelineTest.cpp.i
+.PHONY : tests/pipelineTest.cpp.i
+
+tests/pipelineTest.s: tests/pipelineTest.cpp.s
+
+.PHONY : tests/pipelineTest.s
+
+# target to generate assembly for a file
+tests/pipelineTest.cpp.s:
+	$(MAKE) -f CMakeFiles/pipelineTest.dir/build.make CMakeFiles/pipelineTest.dir/tests/pipelineTest.cpp.s
+.PHONY : tests/pipelineTest.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -239,6 +279,7 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... markerTracking"
+	@echo "... pipelineTest"
 	@echo "... libraryTest"
 	@echo "... findFiducial"
 	@echo "... src/markerTracking.o"
@@ -250,6 +291,9 @@ help:
 	@echo "... tests/libraryTest.o"
 	@echo "... tests/libraryTest.i"
 	@echo "... tests/libraryTest.s"
+	@echo "... tests/pipelineTest.o"
+	@echo "... tests/pipelineTest.i"
+	@echo "... tests/pipelineTest.s"
 .PHONY : help
 
 

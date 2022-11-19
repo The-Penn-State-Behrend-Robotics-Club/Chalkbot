@@ -3,7 +3,7 @@
 
 CMakeFiles/markerTracking.dir/src/markerTracking.cpp.o
  ../include/markerTracking.h
- /home/durus/Chalkbot/src/markerTracking.cpp
+ /home/adam/Chalkbot/src/markerTracking.cpp
  /usr/local/include/opencv4/opencv2/calib3d.hpp
  /usr/local/include/opencv4/opencv2/core.hpp
  /usr/local/include/opencv4/opencv2/core/affine.hpp

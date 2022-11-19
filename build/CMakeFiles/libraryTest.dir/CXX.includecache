@@ -19,14 +19,18 @@ iostream
 -
 vector
 -
+pthread.h
+-
+signal.h
+-
 opencv2/opencv_modules.hpp
 ../include/opencv2/opencv_modules.hpp
 opencv2/opencv.hpp
 ../include/opencv2/opencv.hpp
 
-/home/durus/Chalkbot/tests/libraryTest.cpp
+/home/adam/Chalkbot/tests/libraryTest.cpp
 markerTracking.h
-/home/durus/Chalkbot/tests/markerTracking.h
+/home/adam/Chalkbot/tests/markerTracking.h
 
 /usr/local/include/opencv4/opencv2/calib3d.hpp
 opencv2/core.hpp

@@ -31,7 +31,7 @@ int main(){
         imshow("Live",frame);
         if(waitKey(5) >= 0) break;
 
-        marker = findMarker(&frame, false,false);
+        marker = ft::findMarker(&frame, false,false);
         cout << "Point: " << marker.x << " " << marker.y << endl;
         rectangle(frame, Rect(marker.x - 20, marker.y - 20, 40, 40), Scalar(255,0,0));
 
