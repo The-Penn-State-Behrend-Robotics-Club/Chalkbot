@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/adam/Chalkbot
+CMAKE_SOURCE_DIR = /home/durus/Chalkbot
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/adam/Chalkbot/build
+CMAKE_BINARY_DIR = /home/durus/Chalkbot/build
 
 # Include any dependencies generated for this target.
 include CMakeFiles/libraryTest.dir/depend.make
@@ -59,16 +59,16 @@ include CMakeFiles/libraryTest.dir/flags.make
 
 CMakeFiles/libraryTest.dir/tests/libraryTest.cpp.o: CMakeFiles/libraryTest.dir/flags.make
 CMakeFiles/libraryTest.dir/tests/libraryTest.cpp.o: ../tests/libraryTest.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/adam/Chalkbot/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/libraryTest.dir/tests/libraryTest.cpp.o"
-	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/libraryTest.dir/tests/libraryTest.cpp.o -c /home/adam/Chalkbot/tests/libraryTest.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/durus/Chalkbot/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/libraryTest.dir/tests/libraryTest.cpp.o"
+	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/libraryTest.dir/tests/libraryTest.cpp.o -c /home/durus/Chalkbot/tests/libraryTest.cpp
 
 CMakeFiles/libraryTest.dir/tests/libraryTest.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/libraryTest.dir/tests/libraryTest.cpp.i"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/adam/Chalkbot/tests/libraryTest.cpp > CMakeFiles/libraryTest.dir/tests/libraryTest.cpp.i
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/durus/Chalkbot/tests/libraryTest.cpp > CMakeFiles/libraryTest.dir/tests/libraryTest.cpp.i
 
 CMakeFiles/libraryTest.dir/tests/libraryTest.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/libraryTest.dir/tests/libraryTest.cpp.s"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/adam/Chalkbot/tests/libraryTest.cpp -o CMakeFiles/libraryTest.dir/tests/libraryTest.cpp.s
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/durus/Chalkbot/tests/libraryTest.cpp -o CMakeFiles/libraryTest.dir/tests/libraryTest.cpp.s
 
 # Object files for target libraryTest
 libraryTest_OBJECTS = \
@@ -80,23 +80,23 @@ libraryTest_EXTERNAL_OBJECTS =
 libraryTest: CMakeFiles/libraryTest.dir/tests/libraryTest.cpp.o
 libraryTest: CMakeFiles/libraryTest.dir/build.make
 libraryTest: libmarkerTracking.so
-libraryTest: /usr/local/lib/libopencv_gapi.so.4.6.0
-libraryTest: /usr/local/lib/libopencv_highgui.so.4.6.0
-libraryTest: /usr/local/lib/libopencv_ml.so.4.6.0
-libraryTest: /usr/local/lib/libopencv_objdetect.so.4.6.0
-libraryTest: /usr/local/lib/libopencv_photo.so.4.6.0
-libraryTest: /usr/local/lib/libopencv_stitching.so.4.6.0
-libraryTest: /usr/local/lib/libopencv_video.so.4.6.0
-libraryTest: /usr/local/lib/libopencv_calib3d.so.4.6.0
-libraryTest: /usr/local/lib/libopencv_dnn.so.4.6.0
-libraryTest: /usr/local/lib/libopencv_features2d.so.4.6.0
-libraryTest: /usr/local/lib/libopencv_flann.so.4.6.0
-libraryTest: /usr/local/lib/libopencv_videoio.so.4.6.0
-libraryTest: /usr/local/lib/libopencv_imgcodecs.so.4.6.0
-libraryTest: /usr/local/lib/libopencv_imgproc.so.4.6.0
-libraryTest: /usr/local/lib/libopencv_core.so.4.6.0
+libraryTest: /home/durus/.local/lib/libopencv_gapi.so.4.6.0
+libraryTest: /home/durus/.local/lib/libopencv_highgui.so.4.6.0
+libraryTest: /home/durus/.local/lib/libopencv_ml.so.4.6.0
+libraryTest: /home/durus/.local/lib/libopencv_objdetect.so.4.6.0
+libraryTest: /home/durus/.local/lib/libopencv_photo.so.4.6.0
+libraryTest: /home/durus/.local/lib/libopencv_stitching.so.4.6.0
+libraryTest: /home/durus/.local/lib/libopencv_video.so.4.6.0
+libraryTest: /home/durus/.local/lib/libopencv_calib3d.so.4.6.0
+libraryTest: /home/durus/.local/lib/libopencv_dnn.so.4.6.0
+libraryTest: /home/durus/.local/lib/libopencv_features2d.so.4.6.0
+libraryTest: /home/durus/.local/lib/libopencv_flann.so.4.6.0
+libraryTest: /home/durus/.local/lib/libopencv_videoio.so.4.6.0
+libraryTest: /home/durus/.local/lib/libopencv_imgcodecs.so.4.6.0
+libraryTest: /home/durus/.local/lib/libopencv_imgproc.so.4.6.0
+libraryTest: /home/durus/.local/lib/libopencv_core.so.4.6.0
 libraryTest: CMakeFiles/libraryTest.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/adam/Chalkbot/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable libraryTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/durus/Chalkbot/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable libraryTest"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/libraryTest.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -109,6 +109,6 @@ CMakeFiles/libraryTest.dir/clean:
 .PHONY : CMakeFiles/libraryTest.dir/clean
 
 CMakeFiles/libraryTest.dir/depend:
-	cd /home/adam/Chalkbot/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/adam/Chalkbot /home/adam/Chalkbot /home/adam/Chalkbot/build /home/adam/Chalkbot/build /home/adam/Chalkbot/build/CMakeFiles/libraryTest.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/durus/Chalkbot/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/durus/Chalkbot /home/durus/Chalkbot /home/durus/Chalkbot/build /home/durus/Chalkbot/build /home/durus/Chalkbot/build/CMakeFiles/libraryTest.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/libraryTest.dir/depend
 

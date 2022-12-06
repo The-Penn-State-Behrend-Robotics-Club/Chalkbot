@@ -44,10 +44,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/adam/Chalkbot
+CMAKE_SOURCE_DIR = /home/durus/Chalkbot
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/adam/Chalkbot/build
+CMAKE_BINARY_DIR = /home/durus/Chalkbot/build
 
 #=============================================================================
 # Directory level rules for the build root directory
@@ -80,14 +80,14 @@ clean: CMakeFiles/findFiducial.dir/clean
 CMakeFiles/markerTracking.dir/all:
 	$(MAKE) -f CMakeFiles/markerTracking.dir/build.make CMakeFiles/markerTracking.dir/depend
 	$(MAKE) -f CMakeFiles/markerTracking.dir/build.make CMakeFiles/markerTracking.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/adam/Chalkbot/build/CMakeFiles --progress-num=5,6 "Built target markerTracking"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/durus/Chalkbot/build/CMakeFiles --progress-num=5,6 "Built target markerTracking"
 .PHONY : CMakeFiles/markerTracking.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/markerTracking.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/adam/Chalkbot/build/CMakeFiles 2
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/durus/Chalkbot/build/CMakeFiles 2
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/markerTracking.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/adam/Chalkbot/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/durus/Chalkbot/build/CMakeFiles 0
 .PHONY : CMakeFiles/markerTracking.dir/rule
 
 # Convenience name for target.
@@ -107,14 +107,14 @@ CMakeFiles/markerTracking.dir/clean:
 CMakeFiles/pipelineTest.dir/all: CMakeFiles/markerTracking.dir/all
 	$(MAKE) -f CMakeFiles/pipelineTest.dir/build.make CMakeFiles/pipelineTest.dir/depend
 	$(MAKE) -f CMakeFiles/pipelineTest.dir/build.make CMakeFiles/pipelineTest.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/adam/Chalkbot/build/CMakeFiles --progress-num=7,8 "Built target pipelineTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/durus/Chalkbot/build/CMakeFiles --progress-num=7,8 "Built target pipelineTest"
 .PHONY : CMakeFiles/pipelineTest.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/pipelineTest.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/adam/Chalkbot/build/CMakeFiles 4
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/durus/Chalkbot/build/CMakeFiles 4
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/pipelineTest.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/adam/Chalkbot/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/durus/Chalkbot/build/CMakeFiles 0
 .PHONY : CMakeFiles/pipelineTest.dir/rule
 
 # Convenience name for target.
@@ -134,14 +134,14 @@ CMakeFiles/pipelineTest.dir/clean:
 CMakeFiles/libraryTest.dir/all: CMakeFiles/markerTracking.dir/all
 	$(MAKE) -f CMakeFiles/libraryTest.dir/build.make CMakeFiles/libraryTest.dir/depend
 	$(MAKE) -f CMakeFiles/libraryTest.dir/build.make CMakeFiles/libraryTest.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/adam/Chalkbot/build/CMakeFiles --progress-num=3,4 "Built target libraryTest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/durus/Chalkbot/build/CMakeFiles --progress-num=3,4 "Built target libraryTest"
 .PHONY : CMakeFiles/libraryTest.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/libraryTest.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/adam/Chalkbot/build/CMakeFiles 4
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/durus/Chalkbot/build/CMakeFiles 4
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/libraryTest.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/adam/Chalkbot/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/durus/Chalkbot/build/CMakeFiles 0
 .PHONY : CMakeFiles/libraryTest.dir/rule
 
 # Convenience name for target.
@@ -161,14 +161,14 @@ CMakeFiles/libraryTest.dir/clean:
 CMakeFiles/findFiducial.dir/all:
 	$(MAKE) -f CMakeFiles/findFiducial.dir/build.make CMakeFiles/findFiducial.dir/depend
 	$(MAKE) -f CMakeFiles/findFiducial.dir/build.make CMakeFiles/findFiducial.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/adam/Chalkbot/build/CMakeFiles --progress-num=1,2 "Built target findFiducial"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/durus/Chalkbot/build/CMakeFiles --progress-num=1,2 "Built target findFiducial"
 .PHONY : CMakeFiles/findFiducial.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/findFiducial.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/adam/Chalkbot/build/CMakeFiles 2
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/durus/Chalkbot/build/CMakeFiles 2
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/findFiducial.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/adam/Chalkbot/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/durus/Chalkbot/build/CMakeFiles 0
 .PHONY : CMakeFiles/findFiducial.dir/rule
 
 # Convenience name for target.

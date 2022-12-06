@@ -36,21 +36,22 @@ namespace ft{ //fiducial tracker
         pthread_t findClusters_pt;
 
         pthread_barrier_t startBarrier, endBarrier;
-        pthread_mutex_t sharedLock;
-        pthread_cond_t step_sig, newData_sig;
+        pthread_mutex_t control_lock, scene_lock, masked_lock, contour_lock, cluster_lock;
+        pthread_cond_t step_sig;
 
         enum threadState{stopped = 0, enabled = 1, processing = 2, finished = 3};
 
         struct {
+            // control_lock
             bool run;
             bool exit;
-            bool newData;
             threadState wf_state, cd_state, cl_state;
 
-            Mat sceneIn;
-            Mat maskedScene;
-            vector<vector<Point>> *(contours);
-            vector<RotatedRect> *(clusters);
+            
+            Mat sceneIn; // scene_lock
+            Mat maskedScene; // masked_lock
+            vector<vector<Point>> *(contours); // contour_lock
+            vector<RotatedRect> *(clusters); // cluster_lock
         }shared;
 
         //void *engineController(void *args);
@@ -69,7 +70,7 @@ namespace ft{ //fiducial tracker
         bool start();
         bool stop();
         void step();
-        vector<RotatedRect> *getClusters();
+        vector<RotatedRect> getClusters();
         void feedImage(Mat image);
         
 

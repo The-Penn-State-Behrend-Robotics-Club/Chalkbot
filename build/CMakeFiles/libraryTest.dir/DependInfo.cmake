@@ -4,19 +4,19 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/adam/Chalkbot/tests/libraryTest.cpp" "/home/adam/Chalkbot/build/CMakeFiles/libraryTest.dir/tests/libraryTest.cpp.o"
+  "/home/durus/Chalkbot/tests/libraryTest.cpp" "/home/durus/Chalkbot/build/CMakeFiles/libraryTest.dir/tests/libraryTest.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "../include"
-  "/usr/local/include/opencv4"
+  "/home/durus/.local/include/opencv4"
   )
 
 # Targets to which this target links.
 set(CMAKE_TARGET_LINKED_INFO_FILES
-  "/home/adam/Chalkbot/build/CMakeFiles/markerTracking.dir/DependInfo.cmake"
+  "/home/durus/Chalkbot/build/CMakeFiles/markerTracking.dir/DependInfo.cmake"
   )
 
 # Fortran module output directory.

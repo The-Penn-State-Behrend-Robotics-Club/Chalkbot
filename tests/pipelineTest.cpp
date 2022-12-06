@@ -5,6 +5,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <filesystem>
 
 #include "markerTracking.h"
 #include "opencv2/opencv_modules.hpp"
@@ -15,6 +16,9 @@ using namespace ft;
 
 
 int main(){
+
+    String gitDirectory = get_current_dir_name();
+    gitDirectory = gitDirectory.substr(0, gitDirectory.find("Chalkbot/"));
 
     fidSettings settings;
     settings.cl_ratioUpper = 54;
@@ -31,10 +35,10 @@ int main(){
         return -1;
     }
     for(int i = 1; i < 4; i++){
-        Mat scene = imread("/home/adam/Chalkbot/images/Scene" + to_string(i) + "-2.tiff", IMREAD_COLOR);
+        Mat scene = imread(gitDirectory + "Chalkbot/images/Scene" + to_string(i) + "-2.tiff", IMREAD_COLOR);
         eng.feedImage(scene);
-        eng.step();
-        cout << eng.getClusters() << endl;
+        while(eng.getClusters().size() == 0) eng.step();
+        cout << eng.getClusters().size() << endl;
 
     }
 

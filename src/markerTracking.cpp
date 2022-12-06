@@ -30,11 +30,13 @@ namespace ft{ //fiducial tracker
 
     bool fiducialEngine::start(){
 
-        pthread_mutex_init(&(this->sharedLock), NULL);
+        pthread_mutex_init(&(this->control_lock), NULL);
+        pthread_mutex_init(&(this->scene_lock), NULL);
+        pthread_mutex_init(&(this->masked_lock), NULL);
+        pthread_mutex_init(&(this->contour_lock), NULL);
         pthread_barrier_init(&(this->startBarrier), NULL, 3);
         pthread_barrier_init(&(this->endBarrier), NULL, 3);
         pthread_cond_init(&(this->step_sig), NULL);
-        pthread_cond_init(&(this->newData_sig), NULL);
 
 
         this->shared.run = false;
@@ -64,9 +66,9 @@ namespace ft{ //fiducial tracker
 
         if(!this->started) return true;
 
-        pthread_mutex_lock(&(this->sharedLock));
+        pthread_mutex_lock(&(this->control_lock));
         this->shared.exit = true;
-        pthread_mutex_unlock(&(this->sharedLock));
+        pthread_mutex_unlock(&(this->control_lock));
 
 
         while(1){
@@ -98,93 +100,91 @@ namespace ft{ //fiducial tracker
 
     void fiducialEngine::step(){
 
-        pthread_mutex_lock(&(this->sharedLock));
-        this->shared.run = true;
-        pthread_cond_broadcast(&(this->step_sig));
-        pthread_mutex_unlock(&(this->sharedLock));
+        pthread_mutex_lock(&(this->control_lock));
+        if(!this->shared.sceneIn.empty()){
+            this->shared.run = true;
+            pthread_mutex_unlock(&(this->control_lock));
 
-        pthread_mutex_lock(&(this->sharedLock));
-        while(!this->shared.newData){ // This loop is mainly for initializing the pipeline.
-            pthread_mutex_unlock(&(this->sharedLock));
-    
             pthread_cond_broadcast(&(this->step_sig)); // Keep stepping until new data.
-            pthread_cond_wait(&(this->newData_sig), &(this->sharedLock)); // Possible new data?
-
-            pthread_mutex_lock(&(this->sharedLock));
         }
-        pthread_mutex_unlock(&(this->sharedLock));
 
-        pthread_mutex_lock(&(this->sharedLock));
+        pthread_mutex_lock(&(this->control_lock));
         this->shared.run = false;
-        this->shared.newData = false;
-        pthread_mutex_unlock(&(this->sharedLock));
+        pthread_mutex_unlock(&(this->control_lock));
 
     }
  
-    vector<RotatedRect> *fiducialEngine::getClusters(){
-        vector<RotatedRect> *temp;
-        pthread_mutex_lock(&(this->sharedLock));
-        temp = this->shared.clusters;
-        pthread_mutex_unlock(&(this->sharedLock));
+    vector<RotatedRect> fiducialEngine::getClusters(){
+        vector<RotatedRect> temp;
+        pthread_mutex_lock(&(this->cluster_lock));
+        if(this->shared.clusters != nullptr)
+            temp = *(this->shared.clusters);
+        pthread_mutex_unlock(&(this->cluster_lock));
 
         return temp;
     }
 
     void fiducialEngine::feedImage(Mat image){
-        pthread_mutex_lock(&(this->sharedLock));
+        pthread_mutex_lock(&(this->control_lock));
         this->shared.sceneIn = image;
-        pthread_mutex_unlock(&(this->sharedLock));
+        pthread_mutex_unlock(&(this->control_lock));
     }
 
     void *fiducialEngine::whiteFilter(void *args){
         fiducialEngine *engine = static_cast<fiducialEngine*>(args);
 
-        Mat sceneOut[2], sceneIn;
+        Mat sceneOut[2];
         bool activeBuff;
 
-        sceneOut[0] = Mat::zeros(sceneIn.size(), CV_8UC3);
-        sceneOut[1] = Mat::zeros(sceneIn.size(), CV_8UC3);
+        
 
 
-        pthread_mutex_lock(&(engine->sharedLock));
         while(1){
+
+        pthread_mutex_lock(&(engine->control_lock));
         // Change state : enabled
         engine->shared.wf_state = enabled;
             while(1){
-                pthread_cond_wait(&(engine->step_sig), &(engine->sharedLock));
+                pthread_cond_wait(&(engine->step_sig), &(engine->control_lock));
                 if(engine->shared.run == true) break;
                 if(engine->shared.exit == true) {
                     engine->shared.wf_state = stopped;
-                    pthread_mutex_unlock(&(engine->sharedLock));
+                    pthread_mutex_unlock(&(engine->control_lock));
                     return NULL;
                 }
             }
-            pthread_mutex_unlock(&(engine->sharedLock));
+            pthread_mutex_unlock(&(engine->control_lock));
 
             pthread_barrier_wait(&(engine->startBarrier)); // Wait for all threads to be ready.
 
+            pthread_mutex_lock(&(engine->scene_lock)); // Lock input data until finished
             if(!engine->shared.sceneIn.empty()){
 
-                pthread_mutex_lock(&(engine->sharedLock));
+                pthread_mutex_lock(&(engine->control_lock));
                 engine->shared.wf_state = processing;
-                pthread_mutex_unlock(&(engine->sharedLock));
+                pthread_mutex_unlock(&(engine->control_lock));
 
                 activeBuff = !activeBuff; // Switch to other buffer.
 
+                if(sceneOut[activeBuff].size() != engine->shared.sceneIn.size()) sceneOut[activeBuff] = Mat::zeros(engine->shared.sceneIn.size(), CV_8UC3);
 
-                inRange(sceneIn, engine->settings.wf_lower, engine->settings.wf_upper, sceneOut[activeBuff]);
+                inRange(engine->shared.sceneIn, engine->settings.wf_lower, engine->settings.wf_upper, sceneOut[activeBuff]);
 
-                pthread_mutex_lock(&(engine->sharedLock));
+                pthread_mutex_lock(&(engine->control_lock));
                 engine->shared.wf_state = finished;
-                pthread_mutex_unlock(&(engine->sharedLock));
-
+                pthread_mutex_unlock(&(engine->control_lock));
                 
-            }
+                pthread_mutex_unlock(&(engine->scene_lock)); // Unlock input data
+                pthread_barrier_wait(&(engine->endBarrier)); // Wait for all threads to finish.
 
-            pthread_barrier_wait(&(engine->endBarrier)); // Wait for all threads to finish.
+                engine->shared.maskedScene = sceneOut[activeBuff]; // Pass output buffer to next input
+            } 
+            else {
+                pthread_mutex_unlock(&(engine->scene_lock)); // Unlock input data
+                pthread_barrier_wait(&(engine->endBarrier)); // Wait for all threads to finish.
+            }
             
-            pthread_mutex_lock(&(engine->sharedLock));
-            if(!engine->shared.sceneIn.empty()) engine->shared.maskedScene = sceneOut[activeBuff];
+
         }
     }
 
@@ -195,49 +195,51 @@ namespace ft{ //fiducial tracker
         vector<Vec4i> hierarchy;
         bool activeBuff;
 
-
-
-        pthread_mutex_lock(&(engine->sharedLock));
         while(1){
+
+            pthread_mutex_lock(&(engine->control_lock));
             // Change state : enabled
             engine->shared.cd_state = enabled;
             while(1){
-                pthread_cond_wait(&(engine->step_sig), &(engine->sharedLock));
+                pthread_cond_wait(&(engine->step_sig), &(engine->control_lock));
                 if(engine->shared.run == true) break;
                 if(engine->shared.exit == true) {
                     engine->shared.cd_state = stopped;
-                    pthread_mutex_unlock(&(engine->sharedLock));
+                    pthread_mutex_unlock(&(engine->control_lock));
                     return NULL;
                 }
             }
-            pthread_mutex_unlock(&(engine->sharedLock));
+            pthread_mutex_unlock(&(engine->control_lock));
 
             pthread_barrier_wait(&(engine->startBarrier)); // Wait for all threads to be ready.
 
+            pthread_mutex_lock(&(engine->masked_lock));
             if(!engine->shared.maskedScene.empty()){
                 // Change state : processing
-                pthread_mutex_lock(&(engine->sharedLock));
+                pthread_mutex_lock(&(engine->control_lock));
                 engine->shared.cd_state = processing;
-                pthread_mutex_unlock(&(engine->sharedLock));
+                pthread_mutex_unlock(&(engine->control_lock));
 
                 activeBuff = !activeBuff; // Switch to other buffer.
                 foundContours[activeBuff].clear(); // Empty old buffer.
 
-
                 findContours(engine->shared.maskedScene, foundContours[activeBuff], hierarchy, RETR_FLOODFILL, CHAIN_APPROX_SIMPLE);
                 
                 // Change state : finished
-                pthread_mutex_lock(&(engine->sharedLock));
+                pthread_mutex_lock(&(engine->control_lock));
                 engine->shared.cd_state = finished;
-                pthread_mutex_unlock(&(engine->sharedLock));
+                pthread_mutex_unlock(&(engine->control_lock));
 
-                
+                pthread_mutex_unlock(&(engine->masked_lock)); // Unlock input data
+                pthread_barrier_wait(&(engine->endBarrier)); // Wait for all threads to finish.
+
+                engine->shared.contours = &foundContours[activeBuff];
+            }
+            else {
+                pthread_mutex_unlock(&(engine->masked_lock)); // Unlock input data
+                pthread_barrier_wait(&(engine->endBarrier)); // Wait for all threads to finish.
             }
 
-            pthread_barrier_wait(&(engine->endBarrier)); // Wait for all threads to finish.
-                
-            pthread_mutex_lock(&(engine->sharedLock));
-            if(!engine->shared.maskedScene.empty()) engine->shared.contours = &foundContours[activeBuff];
         }
     }
 
@@ -252,27 +254,28 @@ namespace ft{ //fiducial tracker
         
 
 
-        pthread_mutex_lock(&(engine->sharedLock));
+        pthread_mutex_lock(&(engine->control_lock));
         while(1){
         engine->shared.cl_state = enabled;
             while(1){
-                pthread_cond_wait(&(engine->step_sig), &(engine->sharedLock));
+                pthread_cond_wait(&(engine->step_sig), &(engine->control_lock));
                 if(engine->shared.run == true) break;
                 if(engine->shared.exit == true) {
                     engine->shared.cl_state = stopped;
-                    pthread_mutex_unlock(&(engine->sharedLock));
+                    pthread_mutex_unlock(&(engine->control_lock));
                     return NULL;
                 }
             }
-            pthread_mutex_unlock(&(engine->sharedLock));
+            pthread_mutex_unlock(&(engine->control_lock));
 
             pthread_barrier_wait(&(engine->startBarrier)); // Wait for all threads to be ready.
 
+            pthread_mutex_lock(&(engine->contour_lock));
             if(engine->shared.contours != nullptr){
 
-                pthread_mutex_lock(&(engine->sharedLock));
+                pthread_mutex_lock(&(engine->control_lock));
                 engine->shared.cl_state = processing;
-                pthread_mutex_unlock(&(engine->sharedLock));
+                pthread_mutex_unlock(&(engine->control_lock));
 
                 activeBuff = !activeBuff; // Switch to other buffer.
                 clusters[activeBuff].clear(); // Empty old buffer.
@@ -332,22 +335,23 @@ namespace ft{ //fiducial tracker
                     clusters[activeBuff].push_back(*(*i).outer);
                 }
 
-                pthread_mutex_lock(&(engine->sharedLock));
+                pthread_mutex_lock(&(engine->control_lock));
                 engine->shared.cl_state = finished;
-                pthread_mutex_unlock(&(engine->sharedLock));
+                pthread_mutex_unlock(&(engine->control_lock));
 
-                
-            } 
+                pthread_mutex_unlock(&(engine->contour_lock));
+                pthread_barrier_wait(&(engine->endBarrier)); // Wait for all threads to finish.
 
-            pthread_barrier_wait(&(engine->endBarrier)); // Wait for all threads to finish.
-
-            pthread_mutex_lock(&(engine->sharedLock));
-            if(engine->shared.contours != nullptr){
+                pthread_mutex_lock(&(engine->cluster_lock));
                 engine->shared.clusters = &clusters[activeBuff];
-                engine->shared.newData = true;
+                pthread_mutex_unlock(&(engine->cluster_lock));
+
+            } 
+            else {
+                pthread_mutex_unlock(&(engine->contour_lock)); // Unlock input data
+                pthread_barrier_wait(&(engine->endBarrier)); // Wait for all threads to finish.
             }
 
-            pthread_cond_broadcast(&(engine->newData_sig));
         }
     }
 
