@@ -18,8 +18,10 @@ using namespace ft;
 int main(){
 
     String gitDirectory = get_current_dir_name();
-    gitDirectory = gitDirectory.substr(0, gitDirectory.find("Chalkbot/"));
 
+    cout << "gitDirectory: " << gitDirectory;
+    gitDirectory = gitDirectory.substr(0, gitDirectory.find("Chalkbot") );
+    cout << "-> " << gitDirectory << endl;
     fidSettings settings;
     settings.cl_ratioUpper = 54;
     settings.cl_ratioLower = 48;
@@ -35,13 +37,18 @@ int main(){
         return -1;
     }
     for(int i = 1; i < 4; i++){
-        Mat scene = imread(gitDirectory + "Chalkbot/images/Scene" + to_string(i) + "-2.tiff", IMREAD_COLOR);
+        string filename = "Scene" + to_string(i) + "-2.tiff";
+        Mat scene = imread(gitDirectory + "Chalkbot/images/" + filename, IMREAD_COLOR);
         eng.feedImage(scene);
-        while(eng.getClusters().size() == 0) eng.step();
-        cout << eng.getClusters().size() << endl;
+        eng.step();
+        cout << filename << ": " << eng.getClusters().size() << " clusters" << endl;
 
     }
 
+    eng.stop();
+
     cout << "Finished" << endl;
+
+    return 0;
 
 }

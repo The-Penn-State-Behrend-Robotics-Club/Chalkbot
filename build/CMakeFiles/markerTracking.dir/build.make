@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/durus/Chalkbot
+CMAKE_SOURCE_DIR = /home/adam/Chalkbot
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/durus/Chalkbot/build
+CMAKE_BINARY_DIR = /home/adam/Chalkbot/build
 
 # Include any dependencies generated for this target.
 include CMakeFiles/markerTracking.dir/depend.make
@@ -59,16 +59,16 @@ include CMakeFiles/markerTracking.dir/flags.make
 
 CMakeFiles/markerTracking.dir/src/markerTracking.cpp.o: CMakeFiles/markerTracking.dir/flags.make
 CMakeFiles/markerTracking.dir/src/markerTracking.cpp.o: ../src/markerTracking.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/durus/Chalkbot/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/markerTracking.dir/src/markerTracking.cpp.o"
-	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/markerTracking.dir/src/markerTracking.cpp.o -c /home/durus/Chalkbot/src/markerTracking.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/adam/Chalkbot/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/markerTracking.dir/src/markerTracking.cpp.o"
+	/usr/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/markerTracking.dir/src/markerTracking.cpp.o -c /home/adam/Chalkbot/src/markerTracking.cpp
 
 CMakeFiles/markerTracking.dir/src/markerTracking.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/markerTracking.dir/src/markerTracking.cpp.i"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/durus/Chalkbot/src/markerTracking.cpp > CMakeFiles/markerTracking.dir/src/markerTracking.cpp.i
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/adam/Chalkbot/src/markerTracking.cpp > CMakeFiles/markerTracking.dir/src/markerTracking.cpp.i
 
 CMakeFiles/markerTracking.dir/src/markerTracking.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/markerTracking.dir/src/markerTracking.cpp.s"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/durus/Chalkbot/src/markerTracking.cpp -o CMakeFiles/markerTracking.dir/src/markerTracking.cpp.s
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/adam/Chalkbot/src/markerTracking.cpp -o CMakeFiles/markerTracking.dir/src/markerTracking.cpp.s
 
 # Object files for target markerTracking
 markerTracking_OBJECTS = \
@@ -79,23 +79,23 @@ markerTracking_EXTERNAL_OBJECTS =
 
 libmarkerTracking.so: CMakeFiles/markerTracking.dir/src/markerTracking.cpp.o
 libmarkerTracking.so: CMakeFiles/markerTracking.dir/build.make
-libmarkerTracking.so: /home/durus/.local/lib/libopencv_gapi.so.4.6.0
-libmarkerTracking.so: /home/durus/.local/lib/libopencv_highgui.so.4.6.0
-libmarkerTracking.so: /home/durus/.local/lib/libopencv_ml.so.4.6.0
-libmarkerTracking.so: /home/durus/.local/lib/libopencv_objdetect.so.4.6.0
-libmarkerTracking.so: /home/durus/.local/lib/libopencv_photo.so.4.6.0
-libmarkerTracking.so: /home/durus/.local/lib/libopencv_stitching.so.4.6.0
-libmarkerTracking.so: /home/durus/.local/lib/libopencv_video.so.4.6.0
-libmarkerTracking.so: /home/durus/.local/lib/libopencv_videoio.so.4.6.0
-libmarkerTracking.so: /home/durus/.local/lib/libopencv_imgcodecs.so.4.6.0
-libmarkerTracking.so: /home/durus/.local/lib/libopencv_dnn.so.4.6.0
-libmarkerTracking.so: /home/durus/.local/lib/libopencv_calib3d.so.4.6.0
-libmarkerTracking.so: /home/durus/.local/lib/libopencv_features2d.so.4.6.0
-libmarkerTracking.so: /home/durus/.local/lib/libopencv_flann.so.4.6.0
-libmarkerTracking.so: /home/durus/.local/lib/libopencv_imgproc.so.4.6.0
-libmarkerTracking.so: /home/durus/.local/lib/libopencv_core.so.4.6.0
+libmarkerTracking.so: /usr/local/lib/libopencv_gapi.so.4.6.0
+libmarkerTracking.so: /usr/local/lib/libopencv_highgui.so.4.6.0
+libmarkerTracking.so: /usr/local/lib/libopencv_ml.so.4.6.0
+libmarkerTracking.so: /usr/local/lib/libopencv_objdetect.so.4.6.0
+libmarkerTracking.so: /usr/local/lib/libopencv_photo.so.4.6.0
+libmarkerTracking.so: /usr/local/lib/libopencv_stitching.so.4.6.0
+libmarkerTracking.so: /usr/local/lib/libopencv_video.so.4.6.0
+libmarkerTracking.so: /usr/local/lib/libopencv_videoio.so.4.6.0
+libmarkerTracking.so: /usr/local/lib/libopencv_imgcodecs.so.4.6.0
+libmarkerTracking.so: /usr/local/lib/libopencv_dnn.so.4.6.0
+libmarkerTracking.so: /usr/local/lib/libopencv_calib3d.so.4.6.0
+libmarkerTracking.so: /usr/local/lib/libopencv_features2d.so.4.6.0
+libmarkerTracking.so: /usr/local/lib/libopencv_flann.so.4.6.0
+libmarkerTracking.so: /usr/local/lib/libopencv_imgproc.so.4.6.0
+libmarkerTracking.so: /usr/local/lib/libopencv_core.so.4.6.0
 libmarkerTracking.so: CMakeFiles/markerTracking.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/durus/Chalkbot/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX shared library libmarkerTracking.so"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/adam/Chalkbot/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX shared library libmarkerTracking.so"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/markerTracking.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -108,6 +108,6 @@ CMakeFiles/markerTracking.dir/clean:
 .PHONY : CMakeFiles/markerTracking.dir/clean
 
 CMakeFiles/markerTracking.dir/depend:
-	cd /home/durus/Chalkbot/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/durus/Chalkbot /home/durus/Chalkbot /home/durus/Chalkbot/build /home/durus/Chalkbot/build /home/durus/Chalkbot/build/CMakeFiles/markerTracking.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/adam/Chalkbot/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/adam/Chalkbot /home/adam/Chalkbot /home/adam/Chalkbot/build /home/adam/Chalkbot/build /home/adam/Chalkbot/build/CMakeFiles/markerTracking.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/markerTracking.dir/depend
 

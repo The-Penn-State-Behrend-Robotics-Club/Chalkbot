@@ -34,8 +34,8 @@ namespace ft{ //fiducial tracker
         pthread_mutex_init(&(this->scene_lock), NULL);
         pthread_mutex_init(&(this->masked_lock), NULL);
         pthread_mutex_init(&(this->contour_lock), NULL);
-        pthread_barrier_init(&(this->startBarrier), NULL, 3);
-        pthread_barrier_init(&(this->endBarrier), NULL, 3);
+        pthread_barrier_init(&(this->startBarrier), NULL, 4);
+        pthread_barrier_init(&(this->endBarrier), NULL, 4);
         pthread_cond_init(&(this->step_sig), NULL);
 
 
@@ -49,7 +49,7 @@ namespace ft{ //fiducial tracker
 
         if(!(//(pthread_create(&(engine.controller_pt)    , NULL, &engineController , NULL) == 0) &&
                 (pthread_create(&(this->whiteFilter_pt)   , NULL, &whiteFilter      , this) == 0) &&
-                (pthread_create(&(this->findClusters_pt)  , NULL, &findCandidates   , this) == 0) &&
+                (pthread_create(&(this->findCanidates_pt)  , NULL, &findCandidates   , this) == 0) &&
                 (pthread_create(&(this->findClusters_pt)  , NULL, &findClusters     , this) == 0)))
         {
             
@@ -68,21 +68,23 @@ namespace ft{ //fiducial tracker
 
         pthread_mutex_lock(&(this->control_lock));
         this->shared.exit = true;
+        pthread_cond_broadcast(&(this->step_sig));
         pthread_mutex_unlock(&(this->control_lock));
 
-
+        int waiting = 0;
         while(1){
-            int waiting = 0;
-            if(!this->shared.wf_state && !this->shared.cd_state && !this->shared.cl_state){
+            if(this->shared.wf_state == threadState::stopped && this->shared.cd_state == threadState::stopped && this->shared.cl_state == threadState::stopped){
                 break;
             }else {
-                if(waiting > 100){ // Escalate to killing
-                    pthread_kill(this->whiteFilter_pt, SIGINT);
-                    pthread_kill(this->findCanidates_pt, SIGINT);
-                    pthread_kill(this->findClusters_pt, SIGINT);
-                    this->shared.wf_state = stopped;
-                    this->shared.cd_state = stopped;
-                    this->shared.cl_state = stopped;
+                if(waiting > 1000){ // Escalate to killing (the whole process)
+                    cout << "Couldn't kill fiducial engine." << endl;
+                    exit(-1);
+                    //pthread_kill(this->whiteFilter_pt, SIGINT);
+                    //pthread_kill(this->findCanidates_pt, SIGINT);
+                    //pthread_kill(this->findClusters_pt, SIGINT);
+                    //this->shared.wf_state = stopped;
+                    //this->shared.cd_state = stopped;
+                    //this->shared.cl_state = stopped;
                     break;
                 }
                 usleep(1000); // 1 ms
@@ -102,16 +104,27 @@ namespace ft{ //fiducial tracker
 
         pthread_mutex_lock(&(this->control_lock));
         if(!this->shared.sceneIn.empty()){
-            this->shared.run = true;
-            pthread_mutex_unlock(&(this->control_lock));
+            do{
+                this->shared.run = true;
+                pthread_cond_broadcast(&(this->step_sig));
+                pthread_mutex_unlock(&(this->control_lock));
 
-            pthread_cond_broadcast(&(this->step_sig)); // Keep stepping until new data.
+
+
+                pthread_barrier_wait(&(this->startBarrier)); // Wait for all threads to be ready.
+
+                pthread_mutex_lock(&(this->control_lock));
+                this->shared.run = false;
+                pthread_mutex_unlock(&(this->control_lock));
+
+                pthread_barrier_wait(&(this->endBarrier)); // Wait for all threads to finish.
+
+                pthread_mutex_lock(&(this->control_lock));
+            } while(this->shared.clusters == nullptr);
         }
-
-        pthread_mutex_lock(&(this->control_lock));
-        this->shared.run = false;
         pthread_mutex_unlock(&(this->control_lock));
 
+        
     }
  
     vector<RotatedRect> fiducialEngine::getClusters(){
@@ -134,56 +147,66 @@ namespace ft{ //fiducial tracker
         fiducialEngine *engine = static_cast<fiducialEngine*>(args);
 
         Mat sceneOut[2];
-        bool activeBuff;
-
-        
-
+        bool activeBuff, noData;
 
         while(1){
 
         pthread_mutex_lock(&(engine->control_lock));
         // Change state : enabled
         engine->shared.wf_state = enabled;
+        //cout << "Wf enabled" << endl;
             while(1){
-                pthread_cond_wait(&(engine->step_sig), &(engine->control_lock));
                 if(engine->shared.run == true) break;
                 if(engine->shared.exit == true) {
                     engine->shared.wf_state = stopped;
                     pthread_mutex_unlock(&(engine->control_lock));
                     return NULL;
                 }
+                pthread_cond_wait(&(engine->step_sig), &(engine->control_lock));
             }
+            engine->shared.wf_state = processing;
             pthread_mutex_unlock(&(engine->control_lock));
+
+            //cout << "Wf processing..." << endl;
 
             pthread_barrier_wait(&(engine->startBarrier)); // Wait for all threads to be ready.
 
-            pthread_mutex_lock(&(engine->scene_lock)); // Lock input data until finished
-            if(!engine->shared.sceneIn.empty()){
+            //cout << "Wf started!" << endl;
 
-                pthread_mutex_lock(&(engine->control_lock));
-                engine->shared.wf_state = processing;
-                pthread_mutex_unlock(&(engine->control_lock));
+
+            pthread_mutex_lock(&(engine->scene_lock)); // Lock input data until finished
+            noData = engine->shared.sceneIn.empty();
+            if(!noData){
+
+                //cout << "Wf working..." << endl;
+
 
                 activeBuff = !activeBuff; // Switch to other buffer.
 
-                if(sceneOut[activeBuff].size() != engine->shared.sceneIn.size()) sceneOut[activeBuff] = Mat::zeros(engine->shared.sceneIn.size(), CV_8UC3);
+                if(sceneOut[activeBuff].size() != engine->shared.sceneIn.size()) sceneOut[activeBuff] = Mat::zeros(engine->shared.sceneIn.size(), CV_8U);
 
                 inRange(engine->shared.sceneIn, engine->settings.wf_lower, engine->settings.wf_upper, sceneOut[activeBuff]);
-
-                pthread_mutex_lock(&(engine->control_lock));
-                engine->shared.wf_state = finished;
-                pthread_mutex_unlock(&(engine->control_lock));
                 
-                pthread_mutex_unlock(&(engine->scene_lock)); // Unlock input data
-                pthread_barrier_wait(&(engine->endBarrier)); // Wait for all threads to finish.
-
-                engine->shared.maskedScene = sceneOut[activeBuff]; // Pass output buffer to next input
             } 
-            else {
-                pthread_mutex_unlock(&(engine->scene_lock)); // Unlock input data
-                pthread_barrier_wait(&(engine->endBarrier)); // Wait for all threads to finish.
-            }
+            pthread_mutex_unlock(&(engine->scene_lock)); // Unlock input data
+
+            pthread_mutex_lock(&(engine->control_lock));
+            engine->shared.wf_state = finished;
+            pthread_mutex_unlock(&(engine->control_lock));
+
+            //cout << "Wf finished!" << endl;
+                
+            pthread_barrier_wait(&(engine->endBarrier)); // Wait for all threads to finish.
+
+            //cout << "Wf ended!" << endl;
             
+            // Update output buff
+            if(!noData){
+                //cout << "Wf updating buffer." << endl;
+                pthread_mutex_lock(&(engine->masked_lock));
+                engine->shared.maskedScene = sceneOut[activeBuff]; // Pass output buffer to next input
+                pthread_mutex_unlock(&(engine->masked_lock));
+            }
 
         }
     }
@@ -193,51 +216,63 @@ namespace ft{ //fiducial tracker
 
         vector<vector<Point>> foundContours[2];
         vector<Vec4i> hierarchy;
-        bool activeBuff;
+        bool activeBuff, noData;
 
         while(1){
 
             pthread_mutex_lock(&(engine->control_lock));
             // Change state : enabled
             engine->shared.cd_state = enabled;
+            //cout << "Fc enabled" << endl;
             while(1){
-                pthread_cond_wait(&(engine->step_sig), &(engine->control_lock));
                 if(engine->shared.run == true) break;
                 if(engine->shared.exit == true) {
                     engine->shared.cd_state = stopped;
                     pthread_mutex_unlock(&(engine->control_lock));
                     return NULL;
                 }
+                pthread_cond_wait(&(engine->step_sig), &(engine->control_lock));
             }
+            engine->shared.cd_state = processing;
             pthread_mutex_unlock(&(engine->control_lock));
+
+            //cout << "Cf processing..." << endl;
 
             pthread_barrier_wait(&(engine->startBarrier)); // Wait for all threads to be ready.
 
+            //cout << "Cf started!" << endl;
+
             pthread_mutex_lock(&(engine->masked_lock));
-            if(!engine->shared.maskedScene.empty()){
-                // Change state : processing
-                pthread_mutex_lock(&(engine->control_lock));
-                engine->shared.cd_state = processing;
-                pthread_mutex_unlock(&(engine->control_lock));
+            noData = engine->shared.maskedScene.empty();
+            if(!noData){
+
+                //cout << "Cf working..." << endl;
 
                 activeBuff = !activeBuff; // Switch to other buffer.
                 foundContours[activeBuff].clear(); // Empty old buffer.
 
-                findContours(engine->shared.maskedScene, foundContours[activeBuff], hierarchy, RETR_FLOODFILL, CHAIN_APPROX_SIMPLE);
+                findContours(engine->shared.maskedScene, foundContours[activeBuff], hierarchy, RETR_LIST, CHAIN_APPROX_SIMPLE);
                 
-                // Change state : finished
-                pthread_mutex_lock(&(engine->control_lock));
-                engine->shared.cd_state = finished;
-                pthread_mutex_unlock(&(engine->control_lock));
-
-                pthread_mutex_unlock(&(engine->masked_lock)); // Unlock input data
-                pthread_barrier_wait(&(engine->endBarrier)); // Wait for all threads to finish.
-
-                engine->shared.contours = &foundContours[activeBuff];
             }
-            else {
-                pthread_mutex_unlock(&(engine->masked_lock)); // Unlock input data
-                pthread_barrier_wait(&(engine->endBarrier)); // Wait for all threads to finish.
+            pthread_mutex_unlock(&(engine->masked_lock)); // Unlock input data
+
+            // Change state : finished
+            pthread_mutex_lock(&(engine->control_lock));
+            engine->shared.cd_state = finished;
+            pthread_mutex_unlock(&(engine->control_lock));
+
+            //cout << "Cf finished!" << endl;
+
+            pthread_barrier_wait(&(engine->endBarrier)); // Wait for all threads to finish.
+
+            //cout << "Cf ended!" << endl;
+
+            // Update output buff
+            if(!noData){
+                //cout << "Cf updating buffer." << endl;
+                pthread_mutex_lock(&(engine->contour_lock));
+                engine->shared.contours = &foundContours[activeBuff];
+                pthread_mutex_unlock(&(engine->contour_lock));
             }
 
         }
@@ -246,7 +281,7 @@ namespace ft{ //fiducial tracker
     void *fiducialEngine::findClusters(void *args){
         fiducialEngine *engine = static_cast<fiducialEngine*>(args);
 
-        bool activeBuff;
+        bool activeBuff, noData;
 
         RotatedRect approxShape;
         vector<RotatedRect> canidates;
@@ -254,29 +289,34 @@ namespace ft{ //fiducial tracker
         
 
 
-        pthread_mutex_lock(&(engine->control_lock));
         while(1){
+        pthread_mutex_lock(&(engine->control_lock));
         engine->shared.cl_state = enabled;
+        //cout << "Fc enabled" << endl;
             while(1){
-                pthread_cond_wait(&(engine->step_sig), &(engine->control_lock));
                 if(engine->shared.run == true) break;
                 if(engine->shared.exit == true) {
                     engine->shared.cl_state = stopped;
                     pthread_mutex_unlock(&(engine->control_lock));
                     return NULL;
                 }
+                pthread_cond_wait(&(engine->step_sig), &(engine->control_lock));
             }
+            engine->shared.cl_state = processing;
             pthread_mutex_unlock(&(engine->control_lock));
 
+            //cout << "Fc processing..." << endl;
+            
             pthread_barrier_wait(&(engine->startBarrier)); // Wait for all threads to be ready.
 
+            //cout << "Fc started!" << endl;
+            
             pthread_mutex_lock(&(engine->contour_lock));
-            if(engine->shared.contours != nullptr){
+            noData = engine->shared.contours == nullptr;
+            if(!noData){
 
-                pthread_mutex_lock(&(engine->control_lock));
-                engine->shared.cl_state = processing;
-                pthread_mutex_unlock(&(engine->control_lock));
-
+                //cout << "Fc working..." << endl;
+                
                 activeBuff = !activeBuff; // Switch to other buffer.
                 clusters[activeBuff].clear(); // Empty old buffer.
 
@@ -335,21 +375,25 @@ namespace ft{ //fiducial tracker
                     clusters[activeBuff].push_back(*(*i).outer);
                 }
 
-                pthread_mutex_lock(&(engine->control_lock));
-                engine->shared.cl_state = finished;
-                pthread_mutex_unlock(&(engine->control_lock));
+            } 
+            pthread_mutex_unlock(&(engine->contour_lock));
+            
+            // Change state : finished
+            pthread_mutex_lock(&(engine->control_lock));
+            engine->shared.cl_state = finished;
+            pthread_mutex_unlock(&(engine->control_lock));
 
-                pthread_mutex_unlock(&(engine->contour_lock));
-                pthread_barrier_wait(&(engine->endBarrier)); // Wait for all threads to finish.
+            //cout << "Fc finished!" << endl;
+            
+            pthread_barrier_wait(&(engine->endBarrier)); // Wait for all threads to finish.
 
+            //cout << "Fc ended!" << endl;
+            
+            if(!noData){
+                //cout << "Fc updating buffer." << endl;
                 pthread_mutex_lock(&(engine->cluster_lock));
                 engine->shared.clusters = &clusters[activeBuff];
                 pthread_mutex_unlock(&(engine->cluster_lock));
-
-            } 
-            else {
-                pthread_mutex_unlock(&(engine->contour_lock)); // Unlock input data
-                pthread_barrier_wait(&(engine->endBarrier)); // Wait for all threads to finish.
             }
 
         }
