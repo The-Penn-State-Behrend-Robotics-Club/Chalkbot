@@ -4,3 +4,15 @@
 [submodule "grbl"]
 	path = grbl
 	url = https://github.com/gnea/grbl.git
+[submodule "svg2gcode"]
+	path = svg2gcode
+	url = https://github.com/sameer/svg2gcode.git
+[submodule "gpr"]
+	path = gpr
+	url = https://github.com/dillonhuff/gpr.git
+[submodule "juicy-gcode"]
+	path = juicy-gcode
+	url = https://github.com/domoszlai/juicy-gcode.git
+[submodule "gcodeplot"]
+	path = gcodeplot
+	url = git@github.com:The-Penn-State-Behrend-Robotics-Club/gcodeplot.git
