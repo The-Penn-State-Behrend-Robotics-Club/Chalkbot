@@ -16,3 +16,6 @@
 [submodule "gcodeplot"]
 	path = gcodeplot
 	url = git@github.com:The-Penn-State-Behrend-Robotics-Club/gcodeplot.git
+[submodule "extern/opencv"]
+	path = extern/opencv
+	url = git@github.com:opencv/opencv.git
