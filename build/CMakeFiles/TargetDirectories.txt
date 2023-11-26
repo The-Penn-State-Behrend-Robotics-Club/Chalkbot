@@ -1,6 +1,0 @@
-/home/adam/Chalkbot/build/CMakeFiles/rebuild_cache.dir
-/home/adam/Chalkbot/build/CMakeFiles/edit_cache.dir
-/home/adam/Chalkbot/build/CMakeFiles/markerTracking.dir
-/home/adam/Chalkbot/build/CMakeFiles/pipelineTest.dir
-/home/adam/Chalkbot/build/CMakeFiles/libraryTest.dir
-/home/adam/Chalkbot/build/CMakeFiles/findFiducial.dir
